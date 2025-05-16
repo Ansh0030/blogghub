@@ -16,8 +16,8 @@ const authSchema = new mongooes.Schema({
   password: {
     type: String,
     min: 8,
-    required: true,
+    unique: true,
   },
 });
 
-module.exports = mongooes.model("User", authSchema);
+module.exports = mongooes.model("tblUSer", authSchema);

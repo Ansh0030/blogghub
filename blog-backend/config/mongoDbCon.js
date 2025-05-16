@@ -1,10 +1,10 @@
-const mongooes = require("mongoose");
+const mongoose = require("mongoose");
 
 const uri =
-  "mongodb+srv://root:root@express.silay2q.mongodb.net/?retryWrites=true&w=majority&appName=express";
+  "mongodb+srv://root:root@express.silay2q.mongodb.net/blogger?retryWrites=true&w=majority&appName=express";
 
 const connectDb = async () => {
-  await mongooes.connect(uri);
+  await mongoose.connect(uri);
   console.log("MongoDb connected Successfully with Mongooes!!");
 };
 
