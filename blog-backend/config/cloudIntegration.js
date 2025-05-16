@@ -30,6 +30,11 @@ router.post("/upload", upload.single("file"), async (req, res) => {
     const file = req.file;
     const username = req.body.username;
 
+    const user = await tblUSer.findOne({ username });
+    if (!user) {
+      return res.status(400).json({ error: "User not found" });
+    }
+
     if (!file) {
       return res.status(400).json({ error: "File not uploaded" });
     }
@@ -38,9 +43,9 @@ router.post("/upload", upload.single("file"), async (req, res) => {
     console.log("Username:", username);
 
     const updatedImage = await ImageUrl.findOneAndUpdate(
-      { username }, // find by username
-      { path: file.path }, // update image path
-      { new: true, upsert: true } // return the new doc; insert if not found
+      { username },
+      { path: file.path, userId: user._id },
+      { new: true, upsert: true }
     );
 
     res.status(200).json({

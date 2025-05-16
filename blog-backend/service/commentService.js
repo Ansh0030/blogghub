@@ -1,6 +1,6 @@
 const tblUSer = require("../model/AuthDoc");
 const Comment = require("../model/CommentDoc");
-
+const imagePath = require("../model/imagePath");
 const createComment = async (req, res) => {
   try {
     const { text, username, blogId } = req.body;
@@ -29,16 +29,35 @@ const createComment = async (req, res) => {
 const getComments = async (req, res) => {
   try {
     const blogId = req.params.id;
+
+    // Get comments with author populated
     const comments = await Comment.find({ blogId })
       .populate("author")
       .sort({ createdAt: -1 });
-    console.log(comments);
-    if (comments.length <= 0) {
-      return res.status(400).send(comments, { message: "Comment not found" });
+
+    // If no comments, return early
+    if (!comments.length) {
+      return res.status(400).json({ message: "Comment not found" });
     }
-    res.status(200).json({ comments });
+
+    // For each comment, find the user's image path and attach it
+    const enrichedComments = await Promise.all(
+      comments.map(async (comment) => {
+        const image = await imagePath.findOne({ userId: comment.author._id });
+        return {
+          ...comment.toObject(),
+          author: {
+            ...comment.author.toObject(),
+            imageUrl: image?.path || null,
+          },
+        };
+      })
+    );
+
+    res.status(200).json({ comments: enrichedComments });
   } catch (e) {
-    console.log(e);
+    console.error("Error fetching comments:", e);
+    res.status(500).json({ message: "Server error" });
   }
 };
 

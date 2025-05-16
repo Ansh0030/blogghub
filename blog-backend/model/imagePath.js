@@ -6,7 +6,15 @@ const imagePath = new Schema({
     type: String,
     require: true,
   },
-  username: { type: String, required: true },
+  username: {
+    type: String,
+    required: true,
+  },
+  userId: {
+    required: true,
+    type: Schema.Types.ObjectId,
+    ref: "tblUSer",
+  },
 });
 
 module.exports = mongoose.model("imagePath", imagePath);

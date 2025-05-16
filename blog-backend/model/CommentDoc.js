@@ -16,6 +16,10 @@ const CommentSchema = new Schema({
     ref: "Blog",
     required: true,
   },
+  imageUrl: {
+    type: Schema.Types.ObjectId,
+    ref: "imagePath",
+  },
 });
 
 module.exports = mongoose.model("Comment", CommentSchema);
